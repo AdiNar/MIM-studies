@@ -1,0 +1,39 @@
+Na 5 punktów
++ 1 (jeden typ)
++ 2 (let)
++ 3 (if)
++ 4 (arytmetyka)
++ 5 (porównania)
+  Na 8 punktów
++ 6 (funkcje, rekurencja)
+  Na 10 punktów
++ 7 (nazwane funkcje wieloargumentowe)
+  Na 12 punktów
++ a) (funkcje anonimowe i wyższego rzędu, częściowa aplikacja)
++ b) (listy)
+  
+* Na 16 punktów
++ 1 (dwa typy)
++ 2 (arytmetyka, porównania)
++ 3 (if)
++ 4 (funkcje wieloargumentowe, rekurencja)
++ 5 (funkcje anonimowe i wyższego rzędu, częściowa aplikacja)
+  6 (listy)
++   a) (z pattern matchingiem)
+    b) (z empty, head, tail)
++   c) (lukier)
+  Na 20 punktów
++ 7 (listy dowolnego typu, zagnieżdżone i listy funkcji)
++ 8 (proste typy algebraiczne z jednopoziomowym pattern matchingiem)
++ 9 (statyczne wiązanie identyfikatorów)
++ 10 (statyczne typowanie)
+  Na 24 punkty
++ 11 (ogólne polimorficzne i rekurencyjne typy algebraiczne)
+  12 (typy polimorficzne z algorytmem rekonstrukcji typów)
++ 13 (zagnieżdżony pattern matching, test kompletności)
+
+Typy Int oraz Bool będą zwykłymi typami algebraicznymi, nie są obecne w gramatyce.
+Trzeba podawać jedynie typy funkcji i lambdy, typy zmiennych wynikają z wyrażenia.
+Dodatkowo mechanizm pattern matchingu dodałem do deklaracji np. (x:xs) = [1,2].
+
+Ocena ~22 punkty.

@@ -1,0 +1,86 @@
+--- Rose language grammar ---
+--- Author: Adrian Naruszko an371233 ---
+
+comment "//" ;
+comment "/*" "*/" ;
+
+token VIdent (lower (letter | digit | '_')*) ;
+token TIdent (upper (letter | digit | '_')*) ;
+
+separator nonempty VIdent "" ;
+
+--- Expressions ---
+
+EAnd. Exp1 ::= Exp1 "&&" Exp2 ;
+EOr.  Exp1 ::= Exp1 "||" Exp2 ;
+
+ELt.  Exp2 ::= Exp2 "<"  Exp3 ;
+ELte. Exp2 ::= Exp2 "<=" Exp3 ;
+EGt.  Exp2 ::= Exp2 ">"  Exp3 ;
+EGte. Exp2 ::= Exp2 ">=" Exp3 ;
+EEq.  Exp2 ::= Exp2 "==" Exp3 ;
+ENe.  Exp2 ::= Exp2 "!=" Exp3 ;
+
+EAdd. Exp3 ::= Exp3 "+" Exp4 ;
+ESub. Exp3 ::= Exp3 "-" Exp4 ;
+EMul. Exp4 ::= Exp4 "*" Exp5 ;
+EDiv. Exp4 ::= Exp4 "/" Exp5 ;
+ 
+EApp.   Exp5 ::= Exp5 Exp6 ;
+
+EType.  Exp7 ::= TIdent ;
+EVType. Exp7 ::= VIdent ;
+EList.  Exp7 ::= "[" [Exp7] "]" ;
+EInt.   Exp7 ::= Integer ;
+
+separator  Exp7 "," ;
+
+ECond.   Exp ::= "if" Exp "then" Exp "else" Exp ;
+ELetin.  Exp ::= "let" [Decl] "in" Exp ;
+ELambda. Exp ::= "\\" Type VIdent "->" Exp ;
+ECase.   Exp ::= "case" Exp "of" [PatternEntry] ;
+
+coercions Exp 8 ;
+
+--- Patterns ---
+
+PEntry.        PatternEntry ::= "|>" Pattern "=>" Exp "<|";
+PListPattern.  Pattern1     ::= Pattern1 ":" Pattern2 ;
+PVPattern.     Pattern2     ::= VIdent ;
+PInt.          Pattern2     ::= Integer ;
+PAlgPattern.   Pattern2     ::= TIdent "(" [Pattern] ")" ;
+PList.         Pattern2     ::= "[" [Pattern1] "]" ;
+PAnyPattern.   Pattern2     ::= "_" ;
+
+separator  nonempty PatternEntry "" ;
+separator           Pattern "" ;
+separator           Pattern1 "," ;
+
+coercions Pattern 2 ;
+
+--- Types ---
+
+TCombined. Type    ::= Type1 "->" Type ;
+TList.     Type1   ::= "[" Type "]" ;
+TAlg.      Type2   ::= TIdent "(" [Type] ")" ;
+TVar.      Type3   ::= "<" VIdent ">" ; -- typ polimorficzny
+
+separator           Type "" ;
+separator           Type3 "," ;
+separator  nonempty Type2 "|" ;
+
+coercions Type 3 ;
+
+--- Declarations ---
+
+DPattern.    Decl ::= Pattern "=" Exp ;
+DFun.        Decl ::= "{" Type "}" VIdent [VIdent] "=" Exp ;
+DType.       Decl ::= "data" TIdent "(" [Type3] ")" "=" [Type2] ;
+
+separator nonempty Decl ";" ;
+
+--- Entry point ---
+
+Prog.  Program ::= [Decl] ;
+
+entrypoints Program ;
