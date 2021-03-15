@@ -20,7 +20,7 @@ User can browse all uploaded datasets and query any of them.
 
 DEPLOYMENT - bash + Deployment Manager + a bit of manual work
 ----------
-Files: setup_deploy.sh, deployment_templates/*, cloudbuild_initial.yaml
+Files: setup_deploy.sh, cloud/templates/*, cloud/cloudbuild_initial.yaml
 Run: ./setup_deploy.sh
 
 The deployment is mostly automated. The manual part is described in `setup_deploy.sh` script.
@@ -32,7 +32,7 @@ To allow ssl encryption script requires a domain as an argument and then to add 
 
 DEVELOPMENT Source Repository + Cloud Build
 -----------
-Files: setup_dev.sh, cloudbuild.yaml
+Files: setup_dev.sh, cloud/cloudbuild.yaml
 Run: ./setup_dev.sh
 
 Development is setup with `setup_dev.sh` script. 

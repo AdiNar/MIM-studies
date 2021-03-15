@@ -77,11 +77,11 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 gcloud compute ssl-certificates create 'lb-cert' --domains="${DOMAIN}" --global
 
 # Trigger cloud build, will produce docker image for deployment
-gcloud builds submit --config cloudbuild_initial.yaml .
+gcloud builds submit --config cloud/cloudbuild_initial.yaml .
 
 # Deployment Manager
 gcloud deployment-manager deployments create configuration \
---template deployment_templates/application.jinja \
+--template cloud/templates/application.jinja \
  --properties "OAUTH_CLIENT_ID:${OAUTH_CLIENT_ID},OAUTH_CLIENT_SECRET:${OAUTH_CLIENT_SECRET},zone:${ZONE},APP_SECRET:${APP_SECRET}"
 
 IP=$(gcloud compute addresses list | awk '{if ($1 == "configuration-application-ipaddress") {print $2}}')

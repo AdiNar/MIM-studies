@@ -15,4 +15,4 @@ git push --tags google
 gcloud beta builds triggers create cloud-source-repositories \
   --repo=bigquery-project \
   --tag-pattern="v.*" \
-  --build-config=cloudbuild.yaml
+  --build-config=cloud/cloudbuild.yaml

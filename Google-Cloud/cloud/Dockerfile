@@ -1,6 +1,6 @@
 FROM python:3.6-buster
 RUN apt install bash gcc g++
-COPY . /project
+COPY ../flask /project
 WORKDIR /project
 
 EXPOSE 8080
