@@ -1,0 +1,43 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+BigQuery Semester Project Adrian Naruszko
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+      <span class="navbar-brand">BigQuery Semester Project Adrian Naruszko</span>
+        {% if current_user.is_authenticated %}
+            <ul class="nav navbar-nav navbar-right px-md-5">
+                <li><a href="/">Add new dataset</a></li>
+                <li><a href="/datasets">Datasets</a></li>
+                <li><a href="/auth/logout">Log out</a></li>
+                <li>_</li>
+            </ul>
+        {% endif %}
+    </nav>
+{% endblock %}
+{% if current_user.is_authenticated %}
+    {% block content %}
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        {% if category == 'error' %}
+                        <li class="alert alert-danger col-lg-6 col-lg-offset-3" role="alert">
+                            {{ message }}
+                        </li>
+                        {% else %}
+                        <li class="alert alert-info col-lg-6 col-lg-offset-3" role="alert">
+                            {{ message }}
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <div class="col-lg-6">
+            {% block app_content %}{% endblock %}
+        </div>
+    {% endblock %}
+{% endif %}

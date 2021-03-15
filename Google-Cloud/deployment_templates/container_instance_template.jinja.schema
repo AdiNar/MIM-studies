@@ -1,0 +1,37 @@
+# Based on Google tutorial https://cloud.google.com/deployment-manager/docs/create-advanced-http-load-balanced-deployment#jinja_5
+
+info:
+  title: Container Instance Template
+  author: Adrian Naruszko
+  version: 1.0
+
+imports:
+- path: container_helper.jinja
+
+required:
+- port
+- dockerImage
+- containerImage
+
+properties:
+  port:
+    type: integer
+    description: The host port and container port
+
+  dockerImage:
+    type: string
+    description: The docker image to be used
+
+  dockerEnv:
+    type: object
+    description: The container environment variables
+    default: {}
+
+  containerImage:
+    type: string
+    description: The container image to be used
+
+outputs:
+  instanceTemplateSelfLink:
+    type: string
+    description: The selflink of this instance template

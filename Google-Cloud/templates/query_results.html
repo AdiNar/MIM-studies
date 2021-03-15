@@ -1,0 +1,17 @@
+<table class="table table-striped table-bordered">
+    <caption>{{ title }}</caption>
+    <tr>
+    {% for column in rows.schema %}
+        <th>{{ column.name }} ({{ column.field_type }})</th>
+    {% endfor %}
+    </tr>
+    {% if rows %}
+        {% for row in rows %}
+            <tr>
+            {% for column in row %}
+                <td>{{ column }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    {% endif %}
+</table>

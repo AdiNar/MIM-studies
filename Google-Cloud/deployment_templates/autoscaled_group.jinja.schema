@@ -1,0 +1,28 @@
+info:
+  title: Autoscaled, network LB IGM template
+  author: Adrian Naruszko
+  description: Creates an autoscaled Instance Group Manager running the specified Docker image
+  version: 1.0
+
+required:
+- zone
+- instanceTemplate
+
+properties:
+  zone:
+    type: string
+    description: Zone in which this VM will run
+
+  instanceTemplate:
+    type: string
+    description: URL for the instance template to use for IGM
+
+  size:
+    type: integer
+    default: 1
+    description: Initial size of the Managed Instance Group
+
+  maxSize:
+    type: integer
+    default: 1
+    description: Maximum size the Managed Instance Group will be autoscaled to

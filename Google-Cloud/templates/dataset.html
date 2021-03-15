@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% import 'helpers.html' as helpers %}
+
+{% block title %} Dataset {{ dataset_name }} {% endblock %}
+
+{% block app_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+            <ul class="list-group">
+                {% for table in tables %}
+                    <li class="list-group-item">{{ render_information_schema(dataset_name, table) | safe }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-xs-6">
+            <form method="POST" class="">
+                <div class="form-group">
+                    <label for="query">Type your sql here:</label>
+                    <input type="text" id="query" name="query" class="form-control">
+                    <small class="text-muted">Remember to put column names in `` (e.g. SELECT `id` from table)</small>
+                </div>
+            <input type="submit" class="btn btn-default">
+            </form>
+
+            {% with rows=query_result, title=query_title %}
+                {% include 'query_results.html' %}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+{% endblock %}

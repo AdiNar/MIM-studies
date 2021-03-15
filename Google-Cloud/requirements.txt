@@ -1,0 +1,10 @@
+flask
+google-cloud-bigquery
+pandas
+google-cloud-datastore
+grpcio
+pytest
+flask-bootstrap
+flask-login
+google-auth-oauthlib
+waitress

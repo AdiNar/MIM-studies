@@ -1,0 +1,36 @@
+
+resources:
+  - name: {{ env["name"] }}
+    type: container_instance_template.jinja
+    properties:
+      port: {{ properties["port"] }}
+      dockerEnv: {{ properties["dockerEnv"] }}
+      dockerImage: {{ properties["dockerImage"] }}
+      containerImage: {{ properties["containerImage"] }}
+
+  - name: {{ env["name"] }}-ag
+    type: autoscaled_group.jinja
+    properties:
+      zone: {{ properties["zone"] }}
+      size: {{ properties["size"] }}
+      maxSize: {{ properties["maxSize"] }}
+      port: {{ properties["port"] }}
+      service: {{ properties["service"] }}
+      baseInstanceName: {{ env["name"] }}-instance
+      instanceTemplate: $(ref.{{ env["name"] }}-it.selfLink)
+
+  - name: {{ env["name"] }}-hc
+    type: compute.v1.httpHealthCheck
+    properties:
+      port: {{ properties["port"] }}
+      requestPath: /health
+
+  - name: {{ env["name"] }}-bes
+    type: compute.v1.backendService
+    properties:
+      port: {{ properties["port"] }}
+      portName: {{ properties["service"] }}
+      backends:
+        - name: {{ env["name"] }}-backend
+          group: $(ref.{{ env["name"] }}-ag-igm.instanceGroup)
+      healthChecks: [ $(ref.{{ env["name"] }}-hc.selfLink) ]

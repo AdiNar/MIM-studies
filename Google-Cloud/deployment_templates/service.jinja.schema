@@ -1,0 +1,49 @@
+# Based on Google tutorial https://cloud.google.com/deployment-manager/docs/create-advanced-http-load-balanced-deployment#jinja_5
+
+info:
+  title: Autoscaled IGM
+  author: Adrian Naruszko
+  description: Creates zone autoscaled IGM running specified container.
+  version: 1.0
+
+imports:
+- path: autoscaled_group.jinja
+- path: container_instance_template.jinja
+
+required:
+- port
+- service
+- zone
+- dockerImage
+
+properties:
+  size:
+    type: integer
+    default: 1
+    description: The size of the autoscaled IGM
+
+  maxSize:
+    type: integer
+    default: 1
+    description: The maximum size of the IGM
+
+  containerImage:
+    type: string
+    default: family/cos-stable
+    description: The container image to be used
+
+  dockerImage:
+    type: string
+    description: the docker image to be used
+
+  port:
+    type: integer
+    description: Port to expose on the container as well as on the load balancer (e.g., 8080)
+
+  service:
+    type: string
+    description: Name of the service the port exposes for loadbalancing (backendService) purposes
+
+  zone:
+    type: string
+    description: Zone in which to run the service

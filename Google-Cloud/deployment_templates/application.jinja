@@ -1,0 +1,91 @@
+
+{% set BACKEND = env["deployment"] + "-backend" %}
+{% set APPLICATION = env["deployment"] + "-application" %}
+{% set APPLICATION_PORT = 8080 %}
+{% set LB_PORT_HTTPS = 443 %}
+{% set LB_PORT_HTTP = 80 %}
+{% set CONTAINER_IMAGE = "family/cos-stable" %}
+{% set BACKEND_IMAGE = "gcr.io/" + env['project'] + "/bigquery-project:latest" %}
+
+resources:
+- name: {{ BACKEND }}
+  type: service.jinja
+  properties:
+    zone: {{ properties["zone"] }}
+    size: 1
+    dockerImage: {{ BACKEND_IMAGE }}
+    containerImage: {{ CONTAINER_IMAGE }}
+    port: {{ APPLICATION_PORT }}
+    service: http
+    maxSize: 3
+    dockerEnv:
+      OAUTH_CLIENT_ID: {{ properties["OAUTH_CLIENT_ID"] }}
+      OAUTH_CLIENT_SECRET: {{ properties["OAUTH_CLIENT_SECRET"] }}
+      APP_SECRET: {{ properties["APP_SECRET"] }}
+
+- name: {{ APPLICATION }}-https-urlmap
+  type: compute.v1.urlMap
+  properties:
+    defaultService: $(ref.{{ BACKEND }}-bes.selfLink)
+    hostRules:
+      - hosts: ["*"]
+        pathMatcher: pathmap
+    pathMatchers:
+      - name: pathmap
+        defaultService: $(ref.{{ BACKEND }}-bes.selfLink)
+
+- name: {{ APPLICATION }}-http-urlmap
+  type: compute.v1.urlMap
+  properties:
+    defaultUrlRedirect:
+      httpsRedirect: true
+      redirectResponseCode: FOUND
+
+- name: {{ APPLICATION }}-http-targetproxy
+  type: compute.v1.targetHttpProxy
+  properties:
+    urlMap: $(ref.{{ APPLICATION }}-http-urlmap.selfLink)
+
+- name: {{ APPLICATION }}-https-targetproxy
+  type: compute.v1.targetHttpsProxy
+  properties:
+    urlMap: $(ref.{{ APPLICATION }}-https-urlmap.selfLink)
+    sslCertificates: [
+        'https://www.googleapis.com/compute/v1/projects/{{ env['project'] }}/global/sslCertificates/lb-cert'
+    ]
+
+- name: {{ APPLICATION }}-https-l7lb
+  type: compute.v1.globalForwardingRule
+  properties:
+    IPProtocol: TCP
+    IPAddress: $(ref.{{ APPLICATION }}-ipaddress.address)
+    portRange: {{ LB_PORT_HTTPS }}
+    target: $(ref.{{ APPLICATION }}-https-targetproxy.selfLink)
+
+- name: {{ APPLICATION }}-http-l7lb
+  type: compute.v1.globalForwardingRule
+  properties:
+    IPProtocol: TCP
+    IPAddress: $(ref.{{ APPLICATION }}-ipaddress.address)
+    portRange: {{ LB_PORT_HTTP }}
+    target: $(ref.{{ APPLICATION }}-http-targetproxy.selfLink)
+
+- name: {{ APPLICATION }}-ipaddress
+  type: compute.v1.globalAddress
+
+- name: {{ APPLICATION }}-fw
+  type: compute.v1.firewall
+  properties:
+    allowed:
+      - IPProtocol: TCP
+        ports: [ {{ LB_PORT_HTTP }}, {{ LB_PORT_HTTPS }} ]
+    sourceRanges: [ 0.0.0.0/0 ]
+
+- name: {{ APPLICATION }}-fw-hc
+  type: compute.v1.firewall
+  properties:
+    allowed:
+      - IPProtocol: TCP
+        ports: [ {{ APPLICATION_PORT }} ]
+    # https://cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs#example_health_check_set_up
+    sourceRanges: [ 130.211.0.0/22, 35.191.0.0/16 ]

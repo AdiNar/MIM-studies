@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %} Dataset list {% endblock %}
+{% block app_content %}
+    <ul class="list-group">
+    {% for entry in datasets %}
+        <li class="list-group-item"><a href="{{ url_for('display_dataset', dataset_id=entry.key.id_or_name) }}">{{ entry.key.id_or_name }}</a></li>
+    {% endfor %}
+        <li class="list-group-item"><a href="{{ url_for('main') }}">Add new dataset</a></li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,11 @@
+# Will build Docker image but don't try to update instance groups, as they don't exist yet
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--tag=gcr.io/$PROJECT_ID/bigquery-project:latest', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['run', 'gcr.io/$PROJECT_ID/bigquery-project:latest', '/project/test.py']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/bigquery-project:latest']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [ 'config', 'set', 'compute/zone', 'europe-west3-b']
+images: ['gcr.io/$PROJECT_ID/bigquery-project:latest']

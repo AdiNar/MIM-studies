@@ -1,0 +1,18 @@
+# Based on Google tutorial https://cloud.google.com/deployment-manager/docs/create-advanced-http-load-balanced-deployment#jinja_5
+
+info:
+  title: BigQuery Semester Project
+  author: Adrian Naruszko
+  description: Create application implementing Project III
+  version: 1.0
+
+imports:
+- path: service.jinja
+
+required:
+- zone
+
+properties:
+  zone:
+    type: string
+    description: Zone in which to run the service

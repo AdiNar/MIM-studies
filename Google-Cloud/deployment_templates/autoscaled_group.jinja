@@ -1,0 +1,17 @@
+resources:
+  - name: {{ env["name"] }}-igm
+    type: compute.v1.instanceGroupManager
+    properties:
+      zone: {{ properties["zone"] }}
+      targetSize: {{ properties["size"] }}
+      baseInstanceName: {{ env["name"] }}-instance
+      instanceTemplate: {{ properties["instanceTemplate"] }}
+      
+  - name: {{ env["name"] }}-as
+
+    type: compute.v1.autoscaler
+    properties:
+      zone: {{ properties["zone"] }}
+      target: $(ref.{{ env["name"] }}-igm.selfLink)
+      autoscalingPolicy:
+        maxNumReplicas: {{ properties["maxSize"] }}
